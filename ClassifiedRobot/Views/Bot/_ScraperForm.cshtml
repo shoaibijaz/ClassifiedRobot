@@ -1,0 +1,89 @@
+﻿<div class="card">
+    <div class="header">
+        <h4 class="title">
+            Ads Scraper
+        </h4>
+    </div>
+    <div class="content">
+
+        <form action="{% url 'scraper-form' %}" method="post" id="fmScrapAds">
+
+            {% csrf_token %}
+
+            {{ form.id }}
+            {{ form.ads }}
+            {{ form.pages }}
+
+            <input type="hidden" id="hf_category" value="{{ category_id }}">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Website</label>
+                        {{ form.website }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Proxy</label>
+                        {{ form.proxy }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="categories_div">
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Negative Keywords</label>
+                        {{ form.negative }}
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Keywords</label>
+                        {{ form.keywords }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <button type="button" id="btnSearchAds" class="btn btn-success btn-fill btn-sm">Search Ads</button>
+                    <button type="button" id="btnCreateNewSearch" class="btn btn-default btn-fill btn-sm">Clear & Reload</button>
+
+                </div>
+
+                <div class="col-md-6 text-right">
+
+                    <button type="button" id="btnExtractAds" class="btn btn-primary btn-fill btn-sm">Extract Ads</button>
+                    <button type="button" id="btnCancelExtractAds" disabled="" class="btn btn-info btn-fill btn-sm">Stop/Cancel</button>
+
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="footer">
+
+                <hr>
+
+                <div class="legend">
+                    <i class="fa fa-circle text-info"></i> Ads(<span id="lblAds">{{ form.ads.value }}</span>)
+                    <i class="fa fa-circle text-warning"></i> Pages(<span id="lblPages">{{ form.pages.value }}</span>)
+                </div>
+
+            </div>
+
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>

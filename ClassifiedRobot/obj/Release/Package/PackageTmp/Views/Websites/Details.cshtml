@@ -1,0 +1,82 @@
+﻿@model ClassifiedRobot.Models.Website
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Website</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.URL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.URL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Function)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Function)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SearchURL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SearchURL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Country)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Country)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CommentURL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CommentURL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MessageFormRules)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MessageFormRules)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Order)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Order)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.WebsiteId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

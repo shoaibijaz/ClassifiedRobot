@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<div class="row">
+
+    <div class="col-md-6" id="scraperForm">
+
+    </div>
+
+    <div class="col-md-6" id="commentForm">
+
+
+    </div>
+
+</div>
+
+<div class="row" id="adsListDiv">
+
+</div>
+
+
+@section footerScript{
+    <!-- Scraping Custom Scripts! -->
+    <script src="/assets/scripts/scraper.js"></script>
+
+
+    <script type="text/javascript">
+
+        var $scraper;
+
+        var parsedParms, ads_inerval;
+
+
+        function loaderDIV() {
+
+            var src = '{{ STATIC_PREFIX }}assets/img/loader.gif';
+
+            var dv = $("<div />", { class: 'loader' });
+            var img = $("<img />", { src: src });
+
+            dv.html(img);
+
+            var target = $("#scraperForm");
+
+            target.css('position', 'relative');
+
+            dv.css({ width: target.width(), height: target.height() });
+
+            target.append(dv);
+        }
+
+        $(document).ready(function () {
+
+            $scraper = new $.Scraper({
+                logID: '/',
+                taskID: '/',
+                getScraperFormURL: '@Url.Action("ScraperForm")',
+                scraperFormDIV: '#scraperForm',
+                scraperForm: '#fmScrapAds',
+                scraperPageURL: '/',
+                commentFormURL: '/',
+                commentFormDIV: '#commentForm',
+                commentForm: '#fmPostComment',
+                categoriesURL: '/api/categories',
+                categoriesDIV: '#categories_div'
+            });
+
+            var options = {
+                beforeSubmit: function () { },  // pre-submit callback
+                success: function (response) {
+                    alert(response);
+                }
+            };
+
+        });
+
+
+
+    </script>
+}
+
