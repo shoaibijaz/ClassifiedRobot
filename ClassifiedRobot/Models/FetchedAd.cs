@@ -15,13 +15,12 @@ namespace ClassifiedRobot.Models
 
     }
 
-
     public class FetchedAd
     {
         [Key]
         public int FetchedAdId { get; set; }
 
-        public int TaskId { get; set; }
+        public int SearchLogId { get; set; }
 
         public string AdId { get; set; }
         public string Link { get; set; }
@@ -38,8 +37,10 @@ namespace ClassifiedRobot.Models
 
         public FetchedAdStatus Status { get; set; }
 
-        [ForeignKey("TaskId")]
-        public SearchTask Task { get; set; }
+        [ForeignKey("SearchLogId")]
+        public SearchLog Task { get; set; }
+
+        public virtual ICollection<AdMessage> Messages { get; set; }
 
     }
 }

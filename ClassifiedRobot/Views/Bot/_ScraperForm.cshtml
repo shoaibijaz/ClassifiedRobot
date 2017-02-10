@@ -1,4 +1,6 @@
-﻿<div class="card">
+﻿@model ClassifiedRobot.Models.SearchLog
+
+<div class="card">
     <div class="header">
         <h4 class="title">
             Ads Scraper
@@ -6,27 +8,27 @@
     </div>
     <div class="content">
 
-        <form action="{% url 'scraper-form' %}" method="post" id="fmScrapAds">
+        <form action="@Url.Action("ValidateAds")" method="post" id="fmScrapAds">
 
-            {% csrf_token %}
-
-            {{ form.id }}
-            {{ form.ads }}
-            {{ form.pages }}
-
-            <input type="hidden" id="hf_category" value="{{ category_id }}">
+            @Html.HiddenFor(c => c.SearchLogId)
+            @Html.HiddenFor(c => c.URL)
+            @Html.HiddenFor(c => c.TotalPages)
+            @Html.HiddenFor(c => c.TotalAds)
+            @Html.HiddenFor(c => c.StartTime)
+            @Html.HiddenFor(c => c.EndTime)
+            @Html.HiddenFor(c => c.Status)
 
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Website</label>
-                        {{ form.website }}
+                        @Html.DropDownList("WebsiteId", "Select Website")
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Proxy</label>
-                        {{ form.proxy }}
+                        <select>Select Proxy</select>
                     </div>
                 </div>
             </div>
@@ -39,7 +41,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Negative Keywords</label>
-                        {{ form.negative }}
+                        @Html.TextBoxFor(c => c.Negative)
                     </div>
                 </div>
 
@@ -48,26 +50,21 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Keywords</label>
-                        {{ form.keywords }}
+                        @Html.TextBoxFor(c => c.Keywords)
                     </div>
                 </div>
             </div>
 
             <div class="row">
 
-                <div class="col-md-6">
+                <div class="col-md-12">
 
-                    <button type="button" id="btnSearchAds" class="btn btn-success btn-fill btn-sm">Search Ads</button>
+                    <button type="button" id="btnExtractAds" class="btn btn-primary btn-fill btn-sm">Extract Ads</button>
+                    <button type="button" id="btnCancelExtractAds" disabled="" class="btn btn-info btn-fill btn-sm">Stop/Cancel</button>
                     <button type="button" id="btnCreateNewSearch" class="btn btn-default btn-fill btn-sm">Clear & Reload</button>
 
                 </div>
 
-                <div class="col-md-6 text-right">
-
-                    <button type="button" id="btnExtractAds" class="btn btn-primary btn-fill btn-sm">Extract Ads</button>
-                    <button type="button" id="btnCancelExtractAds" disabled="" class="btn btn-info btn-fill btn-sm">Stop/Cancel</button>
-
-                </div>
             </div>
 
             <div class="clearfix"></div>
@@ -77,8 +74,8 @@
                 <hr>
 
                 <div class="legend">
-                    <i class="fa fa-circle text-info"></i> Ads(<span id="lblAds">{{ form.ads.value }}</span>)
-                    <i class="fa fa-circle text-warning"></i> Pages(<span id="lblPages">{{ form.pages.value }}</span>)
+                    <i class="fa fa-circle text-info"></i> Ads(<span id="lblAds">@Model.TotalAds</span>)
+                    <i class="fa fa-circle text-warning"></i> Pages(<span id="lblPages">@Model.TotalPages</span>)
                 </div>
 
             </div>

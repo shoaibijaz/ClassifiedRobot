@@ -1,0 +1,8 @@
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\bin\Debug\BotConsole.exe.config
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\bin\Debug\BotConsole.exe
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\bin\Debug\BotConsole.pdb
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\bin\Debug\AngleSharp.dll
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\bin\Debug\AngleSharp.xml
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\obj\Debug\BotConsole.csprojResolveAssemblyReference.cache
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\obj\Debug\BotConsole.exe
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\BotConsole\obj\Debug\BotConsole.pdb

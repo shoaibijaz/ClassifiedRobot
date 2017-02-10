@@ -1,0 +1,63 @@
+﻿@model ClassifiedRobot.Models.AdMessage
+
+<div class="card">
+    <div class="header">
+        <h4 class="title">Post Message</h4>
+        <p class="category"></p>
+    </div>
+    <div class="content">
+
+        <form id="fmPostComment" method="post" action="">
+
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+
+                    <div class="form-group">
+                        @Html.TextAreaFor(c=>c.Message)
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBoxFor(c => c.Name)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.TextBoxFor(c => c.Phone)
+                    </div>
+                    <div class="form-group">
+                        @Html.TextBoxFor(c => c.Email)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <button type="button" id="btnPostMessage" class="btn btn-success btn-fill">Send Message</button>
+                    <button type="button" id="btnCancelPostComment" class="btn btn-default btn-fill">Cancel</button>
+
+                </div>
+
+                <div class="col-md-6 text-right">
+                    <button type="button" id="btnMessageProfile" class="btn btn-info btn-fill">Load Profile</button>
+                </div>
+
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="footer">
+
+                <hr>
+                <div class="legend">
+                    <i class="fa fa-circle text-info"></i> Sent(<span id="lblSent"></span>)
+                    <i class="fa fa-circle text-warning"></i> Failed(<span id="lblFailed"></span>)
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>

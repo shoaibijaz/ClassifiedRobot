@@ -24,7 +24,7 @@ namespace ClassifiedRobot.Models
         public string Message { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string phone { get; set; }
+        public string Phone { get; set; }
         public string AdId { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }

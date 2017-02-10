@@ -51,7 +51,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Index","Bot")">
+                        <a href="@Url.Action("Index","Bot", new {  })">
                             <i class="pe-7s-user"></i>
                             <p>Scraper</p>
                         </a>
@@ -146,6 +146,10 @@
     <!--  Ajax Form Plugin    -->
     <script src="/assets/js/jquery.form.min.js"></script>
 
+    @Scripts.Render("~/bundles/signalr")
+    @Scripts.Render("~/bundles/knockout")
+    
+    <script src="~/signalr/hubs"></script>
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
     <script src="/assets/js/light-bootstrap-dashboard.js"></script>

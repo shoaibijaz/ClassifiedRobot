@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Index";
+    var id = Convert.ToString(Url.RequestContext.RouteData.Values["id"]);
 }
 
 
@@ -34,7 +35,6 @@
 
         var parsedParms, ads_inerval;
 
-
         function loaderDIV() {
 
             var src = '{{ STATIC_PREFIX }}assets/img/loader.gif';
@@ -56,17 +56,18 @@
         $(document).ready(function () {
 
             $scraper = new $.Scraper({
-                logID: '/',
+                logID: '@id',
                 taskID: '/',
                 getScraperFormURL: '@Url.Action("ScraperForm")',
                 scraperFormDIV: '#scraperForm',
                 scraperForm: '#fmScrapAds',
-                scraperPageURL: '/',
-                commentFormURL: '/',
+                scraperPageURL: '/Bot/Index/',
+                commentFormURL: '@Url.Action("CommentForm")',
                 commentFormDIV: '#commentForm',
                 commentForm: '#fmPostComment',
                 categoriesURL: '/api/categories',
-                categoriesDIV: '#categories_div'
+                categoriesDIV: '#categories_div',
+                adsListURL:'@Url.Action("ViewAdsOnBot", "FetchedAds")'
             });
 
             var options = {
