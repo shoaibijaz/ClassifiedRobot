@@ -181,7 +181,7 @@ namespace ClassifiedRobot.Scrapers
                         fetched.Category = category;
                         fetched.Created = DateTime.Now;
                         fetched.Image = image;
-                        fetched.Link = log.Website.URL + "/" + adLink;
+                        fetched.Link = (log.Website.URL + "/" + adLink).Replace("///", "/");
                         fetched.Location = location;
                         fetched.Modified = DateTime.Now;
                         fetched.Name = title;

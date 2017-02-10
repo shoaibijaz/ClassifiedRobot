@@ -237,6 +237,7 @@
     <Compile Include="Repository\Repository.cs" />
     <Compile Include="Repository\SearchLogRepository.cs" />
     <Compile Include="Repository\WebsiteRepository.cs" />
+    <Compile Include="Scrapers\GumtreeAustralia.cs" />
     <Compile Include="Scrapers\GumtreeSingapore.cs" />
     <Compile Include="Scrapers\Scraper.cs" />
     <Compile Include="Startup.cs" />

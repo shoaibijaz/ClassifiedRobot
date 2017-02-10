@@ -13,7 +13,7 @@ using ClassifiedRobot.ViewModels;
 
 namespace ClassifiedRobot.Scrapers
 {
-   
+
     public class GumtreeAustralia
     {
 
@@ -36,26 +36,44 @@ namespace ClassifiedRobot.Scrapers
                     var parser = new HtmlParser();
                     var document = parser.Parse(data);
 
-                    if (document.QuerySelectorAll("span.count").Count() > 0)
+                    // ads count
+
+                    var breadCrumb = document.QuerySelector("h1.breadcrumb__item");
+
+
+                    if (breadCrumb != null)
                     {
-                        var adsCountLabl = document.QuerySelector("span.count").InnerHtml.Trim().Replace("ads", "").Replace(",", "");
-
-                        int.TryParse(adsCountLabl, out totalAds);
-
-                        if (totalAds > 0)
+                        if (!breadCrumb.InnerHtml.Contains("Sorry we didn't find any results for"))
                         {
-                            totalPages = 1;
+                            var text = breadCrumb.InnerHtml.Replace(",", "").Replace("\"", "").Trim();
 
-                            if (document.QuerySelectorAll("a.last.follows").Count() > 0)
-                            {
-                                var pages = document.QuerySelector("a.last.follows").Attributes["href"].Value.Split('/').Last().Replace("v1q0p", "");
+                            text = text.Substring(text.IndexOf("of")).Replace("of", "").Trim();
 
-                                int.TryParse(pages, out totalPages);
-                            }
+                            text = text.Substring(0, text.IndexOf("ads")).Trim();
 
+                            int.TryParse(text, out totalAds);
                         }
                     }
 
+                    //end ads count
+
+                    var pages = document.QuerySelector(".paginator__pages");
+
+                    if (pages != null)
+                    {
+                        var anchor = pages.QuerySelectorAll("a").Last();
+
+                        if (anchor != null && anchor.HasAttribute("title") && anchor.Attributes["title"].Value == "Last page")
+                        {
+                            var href = anchor.Attributes["href"].Value.Replace("k0", "");
+
+                            var pagesCount = System.Text.RegularExpressions.Regex.Split(href, @"\D+").Where(c => !string.IsNullOrEmpty(c.Trim())).Last();
+
+                            int.TryParse(pagesCount, out totalPages);
+
+                            totalPages = totalPages <= 0 ? 1 : totalPages;
+                        }
+                    }
                 }
 
                 log.TotalAds = totalAds;
@@ -128,7 +146,7 @@ namespace ClassifiedRobot.Scrapers
 
                     var document = parser.Parse(source);
 
-                    var adsList = document.QuerySelectorAll("li.result");
+                    var adsList = document.QuerySelectorAll("li.ad-listing__item");
 
                     foreach (var item in adsList)
                     {
@@ -143,38 +161,38 @@ namespace ClassifiedRobot.Scrapers
                         var image = "";
                         var price = "";
 
-                        if (item.HasAttribute("data-adid"))
+                        if (item.HasAttribute("data-add-id"))
                         {
-                            adId = item.Attributes["data-adid"].Value;
+                            adId = item.Attributes["data-add-id"].Value;
                         }
 
-                        if (item.QuerySelector("a.href-link") != null)
+                        if (item.QuerySelector("a.ad-listing__title-link") != null)
                         {
-                            title = item.QuerySelector("a.href-link").InnerHtml;
-                            adLink = item.QuerySelector("a.href-link").Attributes["href"].Value;
+                            title = item.QuerySelector("a.ad-listing__title-link").QuerySelector("span").InnerHtml.Trim();
+                            adLink = item.QuerySelector("a.ad-listing__title-link").Attributes["href"].Value;
                         }
 
-                        if (item.QuerySelector("div.creation-date") != null)
+                        if (item.QuerySelector("div.ad-listing__date") != null)
                         {
-                            postedDate = item.QuerySelector("div.creation-date").QuerySelectorAll("span")[1].InnerHtml;
+                            postedDate = item.QuerySelector("div.ad-listing__date").InnerHtml.Trim();
                         }
 
-                        if (item.QuerySelector("div.category-location") != null)
+                        if (item.QuerySelector("span.ad-listing__thumb") != null)
                         {
-                            category = item.QuerySelector("div.category-location").QuerySelector("span").InnerHtml;
+                            image = item.QuerySelector("span.ad-listing__thumb").QuerySelector("img").Attributes["src"].Value;
                         }
 
-                        if (item.QuerySelector("img.thumbM") != null)
+                        if (item.QuerySelector("span.j-original-price") != null)
                         {
-                            image = item.QuerySelector("img.thumbM").Attributes["src"].Value;
+                            price = item.QuerySelector("span.j-original-price").TextContent.Trim();
                         }
 
-                        if (item.QuerySelector("div.info") != null && item.QuerySelector("div.info").QuerySelectorAll("span").Count() > 0)
+                        if (item.QuerySelector("div.ad-listing__location") != null)
                         {
-                            if (item.QuerySelector("div.info").QuerySelector("span.amount") != null)
-                                price = item.QuerySelector("div.info").QuerySelector("span.amount").InnerHtml;
-                            else
-                                price = item.QuerySelector("div.info").QuerySelectorAll("span")[0].InnerHtml;
+                            location = string.Join(",", item.QuerySelector("div.ad-listing__location")
+                                .QuerySelectorAll("span")
+                                .Where(c => c.TextContent != null && c.TextContent.Trim() != ",")
+                                .Select(c => c.TextContent).ToList()).Replace(",,", ",");
                         }
 
 

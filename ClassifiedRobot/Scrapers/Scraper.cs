@@ -55,6 +55,10 @@ namespace ClassifiedRobot.Scrapers
             {
                 await GumtreeSingapore.ExtractAds(log, token, progress);
             }
+            else if (log.Website.Function == "gumtree_au")
+            {
+                await GumtreeAustralia.ExtractAds(log, token, progress);
+            }
             else
             {
                 var detail = new TaskDetails
