@@ -1,0 +1,70 @@
+﻿@model IEnumerable<ClassifiedRobot.Models.SearchLog>
+
+
+<table class="table table-hover table-striped">
+    <tr>
+        <th>
+            #ID
+        </th>
+        <th>
+            Website
+        </th>
+        <th>
+            Keywords
+        </th>
+        <th>
+            Category
+        </th>
+
+        <th>
+            Ads
+        </th>
+        <th>
+            Messages
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SearchLogId)
+            </td>
+            <td>
+                @if (item.Website != null)
+                {
+                    @item.Website.Name
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Keywords)
+            </td>
+            <td>
+                @if (item.Category != null)
+                {
+                    @item.Category.Name
+                }
+            </td>
+            <td>
+                @if (item.Ads != null)
+                {
+
+                    @item.Ads.Count
+                }
+
+            </td>
+            <td>
+                @if (item.Ads != null)
+                {
+
+                    @item.Ads.Where(c=>c.Messages!=null).Sum(c=>c.Messages.Count);
+               
+                }
+            </td>
+            <td></td>
+        </tr>
+    }
+
+</table>

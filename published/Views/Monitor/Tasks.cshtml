@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Tasks";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">Tasks Running</h4>
+            </div>
+            <div class="content table-responsive table-full-width">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section footerScript{
+    <script>
+        currentPage = "tasks";
+
+        var TaskType = { ExtractAds: 1, SendMessage: 2 };
+
+        var TaskStatus =
+        {
+            Runing: 1,
+            Stopped: 2,
+            Completed: 2
+        };
+
+        $(document).ready(function () {
+
+            $.connection.hub.start();
+
+            $("tbody").empty();
+
+            $("tbody").html('<tr><td colspan="2">No task running..</td>')
+
+            $.connection.taskManagerHub.client.progressChanged = function (taskList) {
+
+                $("tbody").empty();
+
+                $("tbody").html('<tr><td colspan="2">No task running..</td>')
+
+                if (taskList.length > 0) {
+
+                    $("tbody").empty();
+
+                    $.each(taskList, function (index, item) {
+
+                        var tr = $("<tr />");
+
+                        tr.append($("<td />").html(item.log));
+
+                        var type = item.type == TaskType.ExtractAds ? "ExtractAds" : "SendMessage";
+
+                        tr.append($("<td />").html(type));
+
+                        $("tbody").append(tr);
+                    });
+                }
+
+            };
+
+        });
+    </script>
+}
+
+

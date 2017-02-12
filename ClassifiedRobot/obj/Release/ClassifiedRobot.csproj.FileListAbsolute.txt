@@ -91,7 +91,15 @@ C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\Class
 C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Release\ClassifiedRobot.Migrations.init.resources
 C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Release\ClassifiedRobot.csproj.GenerateResource.Cache
 C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Release\ClassifiedRobot.dll
 C:\Users\Shoaib.Ijaz\Documents\visual studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Release\ClassifiedRobot.pdb
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\AngleSharp.dll
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.AspNet.SignalR.Core.dll
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.AspNet.SignalR.SystemWeb.dll
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\WebDriver.dll
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\AngleSharp.xml
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.AspNet.SignalR.Core.xml
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.AspNet.SignalR.SystemWeb.xml
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\WebDriver.xml
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Release\ClassifiedRobot.Migrations.initsss.resources

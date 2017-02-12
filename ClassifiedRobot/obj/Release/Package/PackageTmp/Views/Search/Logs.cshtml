@@ -1,0 +1,123 @@
+﻿@model ClassifiedRobot.ViewModels.SearchLogFilterViewModel
+
+@{
+    ViewBag.Title = "Logs";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">Search History</h4>
+            </div>
+            <div class="content">
+                <form action="@Url.Action("GetSearches")" method="post" id="fmFilter">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Kewords</label>
+                                @Html.TextBoxFor(c => c.Kewords, new { @class = "form-control", placeholder = "Keywords" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                @Html.TextBoxFor(c => c.StartDate, new { @class = "form-control", placeholder = "Start Date" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>End Date</label>
+                                @Html.TextBoxFor(c => c.EndDate, new { @class = "form-control", placeholder = "End Date" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label></label>
+                                <button type="button" class="btn btn-info btn-fill" id="btnGetHistory" style="margin-top:24px;">Search</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="content table-responsive table-full-width" id="historyListDiv">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section footerScript{
+    <script>
+        currentPage = "searchLogs";
+
+
+
+        $(document).ready(function () {
+
+            var loader = {
+                show: function () {
+                    var row = $("div >", { class: 'row' });
+                    var col = $("div >", { class: 'col-md-2 text-center' });
+                    var img = $("img >", { src: '/assets/img/loader.gif', width: 35 });
+
+                    col.append(img);
+                    row.append(col);
+
+                    $("#historyListDiv").html(img);
+
+                },
+                hide: function () {
+                    $("#historyListDiv").empty();
+                }
+            };
+
+            var initAjaxScraperForm = function () {
+
+                $("#fmFilter").ajaxForm({
+                    beforeSubmit: function () {
+                        loader.show();
+                    },
+                    success: function (response) {
+                        $("#historyListDiv").html(response);
+                    },
+                    error: function () {
+                        loader.hide();
+                    }
+                });
+
+            };
+
+            initAjaxScraperForm();
+
+            $("#StartDate").datepicker({
+                format: 'dd/mm/yyyy'
+            }).on("show",function (e) {
+                $(".datepicker-dropdown").addClass("has_open");
+                e.stopPropagation();
+            });
+
+            $("#EndDate").datepicker({
+                format: 'dd/mm/yyyy'
+            }).on("show", function (e) {
+                $(".datepicker-dropdown").addClass("has_open");
+                e.stopPropagation();
+            });
+
+            $("#fmFilter").submit();
+
+            $("#btnGetHistory").click(function () {
+                $("#fmFilter").submit();
+            });
+        });
+    </script>
+}
+
+
+
+
+
