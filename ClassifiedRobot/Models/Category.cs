@@ -23,6 +23,6 @@ namespace ClassifiedRobot.Models
         public Category Parent { get; set; }
 
         [ForeignKey("WebsiteId")]
-        public virtual Website Website { get; set; }
+        public Website Website { get; set; }
     }
 }

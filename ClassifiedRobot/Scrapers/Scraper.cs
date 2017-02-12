@@ -55,33 +55,41 @@ namespace ClassifiedRobot.Scrapers
 
         public static async Task ExtractAds(SearchLog log, CancellationTokenSource token, IProgress<TaskDetails> progress)
         {
-            if (log.Website.Function == "gumtree_sg")
+            try
             {
-                await GumtreeSingapore.ExtractAds(log, token, progress);
-            }
-            else if (log.Website.Function == "gumtree_au")
-            {
-                await GumtreeAustralia.ExtractAds(log, token, progress);
-            }
-            else if (log.Website.Function == "locanto")
-            {
-                await LocantoSingapore.ExtractAds(log, token, progress);
-            }
-            else
-            {
-                var detail = new TaskDetails
+                if (log.Website.Function == "gumtree_sg")
                 {
-                    LogId = log.SearchLogId,
-                    Pages = 0,
-                    Ads = 0,
-                    Message = "No Function found for " + log.Website.Function,
-                    Status = ViewModels.TaskStatus.Completed,
-                    SearchLog = log,
-                    CancelToken = token,
-                    TaskType = TaskType.ExtractAds
-                };
+                    await GumtreeSingapore.ExtractAds(log, token, progress);
+                }
+                else if (log.Website.Function == "gumtree_au")
+                {
+                    await GumtreeAustralia.ExtractAds(log, token, progress);
+                }
+                else if (log.Website.Function == "locanto")
+                {
+                    await LocantoSingapore.ExtractAds(log, token, progress);
+                }
+                else
+                {
+                    var detail = new TaskDetails
+                    {
+                        LogId = log.SearchLogId,
+                        Pages = 0,
+                        Ads = 0,
+                        Message = "No Function found for " + log.Website.Function,
+                        Status = ViewModels.TaskStatus.Completed,
+                        SearchLog = log,
+                        CancelToken = token,
+                        TaskType = TaskType.ExtractAds
+                    };
 
-                progress.Report(detail);
+                    progress.Report(detail);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
 
 

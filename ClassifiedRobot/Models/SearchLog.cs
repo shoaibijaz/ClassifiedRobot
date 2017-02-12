@@ -41,7 +41,7 @@ namespace ClassifiedRobot.Models
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
-        public virtual ICollection<FetchedAd> Ads { get; set; }
+        public ICollection<FetchedAd> Ads { get; set; }
 
     }
 }

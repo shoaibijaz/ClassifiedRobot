@@ -31,6 +31,6 @@ namespace ClassifiedRobot.Models
         public MessageStatus Status { get; set; }
 
         [ForeignKey("FetchedAdId")]
-        public virtual FetchedAd AD { get; set; }
+        public FetchedAd AD { get; set; }
     }
 }

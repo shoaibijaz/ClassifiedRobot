@@ -40,7 +40,7 @@ namespace ClassifiedRobot.Models
         [ForeignKey("SearchLogId")]
         public SearchLog Log { get; set; }
 
-        public virtual ICollection<AdMessage> Messages { get; set; }
+        public ICollection<AdMessage> Messages { get; set; }
 
     }
 }

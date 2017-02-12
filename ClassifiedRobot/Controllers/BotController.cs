@@ -52,12 +52,12 @@ namespace ClassifiedRobot.Controllers
             {
                 if (log.Website == null && log.WebsiteId > 0)
                 {
-                    log.Website = _websiteRepository.Find(log.WebsiteId);
+                    log.Website = _db.Websites.Find(log.WebsiteId);
                 }
 
                 if (log.Category == null && log.CategoryId > 0)
                 {
-                    log.Category = _categoryRepository.Find((int)log.CategoryId);
+                    log.Category = _db.Categories.Find((int)log.CategoryId);
                 }
 
                 log = Scraper.ValidateAds(log);
@@ -66,6 +66,9 @@ namespace ClassifiedRobot.Controllers
                 log.Category = null;
 
                 _searchLogRepository.SaveLog(log);
+
+                log.Website = null;
+                log.Category = null;
 
                 return Json(ControllerResponse.OnSuccess("", log));
             }

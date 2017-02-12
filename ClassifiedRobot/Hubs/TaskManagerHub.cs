@@ -64,9 +64,25 @@ namespace ClassifiedRobot.Hubs
 
             int taskId = searchLog;
 
-            var logObject = ApplicationDbContext.Create().SearchLogs.Include("Website").Include("Category").Where(c => c.SearchLogId == searchLog).First();
+            var db = ApplicationDbContext.Create();
 
-            logObject.Category.Website = null;
+            var logObject = db.SearchLogs.Find(searchLog);
+
+            logObject.Ads = null;
+
+            if (logObject.Category == null && logObject.CategoryId > 0)
+            {
+                logObject.Category = db.Categories.Find((int)logObject.CategoryId);
+                logObject.Category.Website = null;
+            }
+
+            if (logObject.Website == null && logObject.WebsiteId > 0)
+            {
+                logObject.Website = db.Websites.Find(logObject.WebsiteId);
+                logObject.Website.Searches = null;
+            }
+
+          
 
             CurrentTasks.TryAdd(taskId, new TaskDetails
             {
@@ -98,7 +114,23 @@ namespace ClassifiedRobot.Hubs
 
             int taskId = searchLog;
 
-            var logObject = ApplicationDbContext.Create().SearchLogs.Include("Website").Where(c => c.SearchLogId == searchLog).First();
+            var db = ApplicationDbContext.Create();
+
+            var logObject = db.SearchLogs.Find(searchLog);
+
+            logObject.Ads = null;
+
+            if (logObject.Category == null && logObject.CategoryId > 0)
+            {
+                logObject.Category = db.Categories.Find((int)logObject.CategoryId);
+                logObject.Category.Website = null;
+            }
+
+            if (logObject.Website == null && logObject.WebsiteId > 0)
+            {
+                logObject.Website = db.Websites.Find(logObject.WebsiteId);
+                logObject.Website.Searches = null;
+            }
 
 
             CurrentTasks.TryAdd(taskId, new TaskDetails
