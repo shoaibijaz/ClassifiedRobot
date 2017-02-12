@@ -38,7 +38,7 @@ namespace ClassifiedRobot.Models
         public FetchedAdStatus Status { get; set; }
 
         [ForeignKey("SearchLogId")]
-        public SearchLog Task { get; set; }
+        public SearchLog Log { get; set; }
 
         public virtual ICollection<AdMessage> Messages { get; set; }
 

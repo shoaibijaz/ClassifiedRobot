@@ -23,6 +23,10 @@ namespace ClassifiedRobot.Scrapers
                 {
                     return GumtreeAustralia.ValidateSearch(log);
                 }
+                else if (log.Website.Function == "locanto")
+                {
+                    return LocantoSingapore.ValidateSearch(log);
+                }
 
                 throw new Exception("No Function found for " + log.Website.Function);
             }
@@ -38,7 +42,7 @@ namespace ClassifiedRobot.Scrapers
             {
                 if (log.Website.Function == "gumtree_1")
                 {
-                   // await GumtreeSingapore.ExtractAds(log);
+                    // await GumtreeSingapore.ExtractAds(log);
                 }
 
                 throw new Exception("No Function found for " + log.Website.Function);
@@ -59,6 +63,10 @@ namespace ClassifiedRobot.Scrapers
             {
                 await GumtreeAustralia.ExtractAds(log, token, progress);
             }
+            else if (log.Website.Function == "locanto")
+            {
+                await LocantoSingapore.ExtractAds(log, token, progress);
+            }
             else
             {
                 var detail = new TaskDetails
@@ -67,10 +75,10 @@ namespace ClassifiedRobot.Scrapers
                     Pages = 0,
                     Ads = 0,
                     Message = "No Function found for " + log.Website.Function,
-                    isCancel = true,
+                    Status = ViewModels.TaskStatus.Completed,
                     SearchLog = log,
-                    CancelToken = token
-                    
+                    CancelToken = token,
+                    TaskType = TaskType.ExtractAds
                 };
 
                 progress.Report(detail);

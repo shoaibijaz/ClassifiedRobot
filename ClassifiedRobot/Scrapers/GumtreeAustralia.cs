@@ -28,53 +28,53 @@ namespace ClassifiedRobot.Scrapers
                 var totalAds = 0;
                 var totalPages = 1;
 
-
-                using (WebClient client = new WebClient())
-                {
-                    var data = client.DownloadString(URL);
-
-                    var parser = new HtmlParser();
-                    var document = parser.Parse(data);
-
-                    // ads count
-
-                    var breadCrumb = document.QuerySelector("h1.breadcrumb__item");
-
-
-                    if (breadCrumb != null)
+                if (log.Keywords != null && !string.IsNullOrEmpty(log.Keywords.Trim()))
+                    using (WebClient client = new WebClient())
                     {
-                        if (!breadCrumb.InnerHtml.Contains("Sorry we didn't find any results for"))
+                        var data = client.DownloadString(URL);
+
+                        var parser = new HtmlParser();
+                        var document = parser.Parse(data);
+
+                        // ads count
+
+                        var breadCrumb = document.QuerySelector("h1.breadcrumb__item");
+
+
+                        if (breadCrumb != null)
                         {
-                            var text = breadCrumb.InnerHtml.Replace(",", "").Replace("\"", "").Trim();
+                            if (!breadCrumb.InnerHtml.Contains("Sorry we didn't find any results for"))
+                            {
+                                var text = breadCrumb.InnerHtml.Replace(",", "").Replace("\"", "").Trim();
 
-                            text = text.Substring(text.IndexOf("of")).Replace("of", "").Trim();
+                                text = text.Substring(text.IndexOf("of")).Replace("of", "").Trim();
 
-                            text = text.Substring(0, text.IndexOf("ads")).Trim();
+                                text = text.Substring(0, text.IndexOf("ads")).Trim();
 
-                            int.TryParse(text, out totalAds);
+                                int.TryParse(text, out totalAds);
+                            }
+                        }
+
+                        //end ads count
+
+                        var pages = document.QuerySelector(".paginator__pages");
+
+                        if (pages != null)
+                        {
+                            var anchor = pages.QuerySelectorAll("a").Last();
+
+                            if (anchor != null && anchor.HasAttribute("title") && anchor.Attributes["title"].Value == "Last page")
+                            {
+                                var href = anchor.Attributes["href"].Value.Replace("k0", "");
+
+                                var pagesCount = System.Text.RegularExpressions.Regex.Split(href, @"\D+").Where(c => !string.IsNullOrEmpty(c.Trim())).Last();
+
+                                int.TryParse(pagesCount, out totalPages);
+
+                                totalPages = totalPages <= 0 ? 1 : totalPages;
+                            }
                         }
                     }
-
-                    //end ads count
-
-                    var pages = document.QuerySelector(".paginator__pages");
-
-                    if (pages != null)
-                    {
-                        var anchor = pages.QuerySelectorAll("a").Last();
-
-                        if (anchor != null && anchor.HasAttribute("title") && anchor.Attributes["title"].Value == "Last page")
-                        {
-                            var href = anchor.Attributes["href"].Value.Replace("k0", "");
-
-                            var pagesCount = System.Text.RegularExpressions.Regex.Split(href, @"\D+").Where(c => !string.IsNullOrEmpty(c.Trim())).Last();
-
-                            int.TryParse(pagesCount, out totalPages);
-
-                            totalPages = totalPages <= 0 ? 1 : totalPages;
-                        }
-                    }
-                }
 
                 log.TotalAds = totalAds;
                 log.TotalPages = totalPages;
@@ -101,12 +101,14 @@ namespace ClassifiedRobot.Scrapers
                     Pages = i,
                     Ads = i * 1,
                     SearchLog = log,
-                    CancelToken = token
+                    CancelToken = token,
+                    TaskType = TaskType.ExtractAds,
+                    Status = ViewModels.TaskStatus.Runing
                 };
 
                 if (token.IsCancellationRequested)
                 {
-                    detail.isCancel = true;
+                    detail.Status = ViewModels.TaskStatus.Stopped;
 
                     if (progress != null)
                         progress.Report(detail);
@@ -131,6 +133,20 @@ namespace ClassifiedRobot.Scrapers
 
                 await Task.Delay(2000);
             }
+
+            var details = new TaskDetails
+            {
+                LogId = log.SearchLogId,
+                Pages = log.TotalPages,
+                Ads = counter,
+                SearchLog = log,
+                CancelToken = token,
+                TaskType = TaskType.ExtractAds,
+                Status = ViewModels.TaskStatus.Completed
+            };
+
+            if (progress != null)
+                progress.Report(details);
         }
 
         public static int ExtractHTML(string source, SearchLog log, int page)
@@ -196,23 +212,26 @@ namespace ClassifiedRobot.Scrapers
                         }
 
 
-                        fetched.AdId = adId;
-                        fetched.Category = category;
-                        fetched.Created = DateTime.Now;
-                        fetched.Image = image;
-                        fetched.Link = log.Website.URL + "/" + adLink;
-                        fetched.Location = location;
-                        fetched.Modified = DateTime.Now;
-                        fetched.Name = title;
-                        fetched.Page = page;
-                        fetched.PostedOn = postedDate;
-                        fetched.Price = price;
-                        fetched.SearchLogId = log.SearchLogId;
-                        fetched.Status = FetchedAdStatus.VISIBLE;
+                        if (validateNegativeWords(log.Negative, title))
+                        {
+                            fetched.AdId = adId;
+                            fetched.Category = category;
+                            fetched.Created = DateTime.Now;
+                            fetched.Image = image;
+                            fetched.Link = log.Website.URL + "/" + adLink;
+                            fetched.Location = location;
+                            fetched.Modified = DateTime.Now;
+                            fetched.Name = title;
+                            fetched.Page = page;
+                            fetched.PostedOn = postedDate;
+                            fetched.Price = price;
+                            fetched.SearchLogId = log.SearchLogId;
+                            fetched.Status = FetchedAdStatus.VISIBLE;
 
-                        db.FetchedAds.Add(fetched);
+                            db.FetchedAds.Add(fetched);
 
-                        count++;
+                            count++;
+                        }
 
                     }
 
@@ -225,6 +244,30 @@ namespace ClassifiedRobot.Scrapers
 
             return count;
 
+        }
+
+        private static bool validateNegativeWords(string negativeWords, string target)
+        {
+            var result = true;
+
+            try
+            {
+                target = target.ToLower();
+
+                if (!string.IsNullOrEmpty(negativeWords))
+                {
+                    foreach (var item in negativeWords.Split(','))
+                    {
+                        if (target.Contains(item.ToLower())) return false;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return result;
+            }
         }
     }
 }

@@ -1,3 +1,258 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+
+<style>
+    .garph1 {
+        height: 500px;
+        font-size: 11px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">Searche By Website</h4>
+            </div>
+            <div class="content garph1" id="websitesSearches" style="padding:0 5px;">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">Latest Search & Ads Count</h4>
+            </div>
+            <div class="content garph1" id="searchByAds" style="padding:0 5px;">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section footerScript{
+    <script>
+
+        (function ($) {
+
+
+            $.fn.WebsiteSearches = function (options) {
+
+                var $this = $(this);
+
+                var thisID = $this.attr('id').replace("#", "");
+
+                console.log(thisID)
+
+                var that = this;
+
+                var colorsList = ["#FF0F00", "#FF6600", "#FF9E01", "#FCD202", "#F8FF01", "#B0DE09", "#04D215",
+                    "#0D8ECF", "#0D52D1", "#2A0CD0", "#8A0CCF", "#CD0D74", "#754DEB", "#DDDDDD", "#999999", "#333333", "#000000"]
+
+                var defaults = {
+                    url: ''
+                };
+
+                var options = $.extend(defaults, options);
+
+                var getSearchesCount = function () {
+
+                    $.get(defaults.url, {}, function (response) {
+                        var data = addColorFieldInData(response);
+                        initSearchCountChart(data);
+                    });
+                };
+
+                var addColorFieldInData = function (data) {
+
+                    $.each(data, function (index, item) {
+                        if (index < colorsList.length) {
+                            this.Color = colorsList[index];
+                        }
+                    });
+
+                    return data;
+                };
+
+                var initSearchCountChart = function (data) {
+                    var chart = AmCharts.makeChart(thisID, {
+                        "type": "serial",
+                        "theme": "light",
+                        "dataProvider": data,
+                        "valueAxes": [{
+                            "gridColor": "#FFFFFF",
+                            "gridAlpha": 0.2,
+                            "dashLength": 0
+                        }],
+                        "gridAboveGraphs": true,
+                        "startDuration": 1,
+                        "graphs": [{
+                            "balloonText": "[[category]]: <b>[[value]]</b>",
+                            "fillColorsField": "Color",
+                            "fillAlphas": 0.8,
+                            "lineAlpha": 0.2,
+                            "type": "column",
+                            "valueField": "count",
+                            "fixedColumnWidth": 30
+                        }],
+                        "chartCursor": {
+                            "categoryBalloonEnabled": false,
+                            "cursorAlpha": 0,
+                            "zoomable": false
+                        },
+                        "categoryField": "ads",
+                        "categoryAxis": {
+                            "gridPosition": "start",
+                            "gridAlpha": 0,
+                            "tickPosition": "start",
+                            "tickLength": 20
+                        },
+                        "export": {
+                            "enabled": true
+                        }
+
+                    });
+                };
+
+                function wait(ms) {
+                    var start = new Date().getTime();
+                    var end = start;
+                    while (end < start + ms) {
+                        end = new Date().getTime();
+                    }
+                };
+
+                var registerEvents = function () {
+
+
+                };
+
+                var init = function () {
+
+                    getSearchesCount();
+
+                };
+
+                init();
+
+                return this;
+            };
+
+            $.fn.SearchByAds = function (options) {
+
+                var $this = $(this);
+
+                var thisID = $this.attr('id').replace("#", "");
+
+                console.log(thisID)
+
+                var that = this;
+
+                var colorsList = ["#FF0F00", "#FF6600", "#FF9E01", "#FCD202", "#F8FF01", "#B0DE09", "#04D215",
+                    "#0D8ECF", "#0D52D1", "#2A0CD0", "#8A0CCF", "#CD0D74", "#754DEB", "#DDDDDD", "#999999", "#333333", "#000000"]
+
+                var defaults = {
+                    url: ''
+                };
+
+                var options = $.extend(defaults, options);
+
+                var getSearchesCount = function () {
+
+                    $.get(defaults.url, {}, function (response) {
+                        var data = addColorFieldInData(response);
+                        initSearchCountChart(data);
+                    });
+                };
+
+                var addColorFieldInData = function (data) {
+
+                    $.each(data, function (index, item) {
+                        if (index < colorsList.length) {
+                            this.Color = colorsList[index];
+                        }
+                    });
+
+                    return data;
+                };
+
+                var initSearchCountChart = function (data) {
+                    var chart = AmCharts.makeChart(thisID, {
+                        "type": "serial",
+                        "theme": "light",
+                        "dataProvider": data,
+                        "valueAxes": [{
+                            "gridColor": "#FFFFFF",
+                            "gridAlpha": 0.2,
+                            "dashLength": 0
+                        }],
+                        "gridAboveGraphs": true,
+                        "startDuration": 1,
+                        "graphs": [{
+                            "balloonText": "[[category]]: <b>[[value]]</b>",
+                            "fillColorsField": "Color",
+                            "fillAlphas": 0.8,
+                            "lineAlpha": 0.2,
+                            "type": "column",
+                            "valueField": "ads",
+                            "fixedColumnWidth": 30
+                        }],
+                        "chartCursor": {
+                            "categoryBalloonEnabled": false,
+                            "cursorAlpha": 0,
+                            "zoomable": false
+                        },
+                        "categoryField": "log",
+                        "categoryAxis": {
+                            "gridPosition": "start",
+                            "gridAlpha": 0,
+                            "tickPosition": "start",
+                            "tickLength": 20
+                        },
+                        "export": {
+                            "enabled": true
+                        }
+
+                    });
+                };
+
+                function wait(ms) {
+                    var start = new Date().getTime();
+                    var end = start;
+                    while (end < start + ms) {
+                        end = new Date().getTime();
+                    }
+                };
+
+                var registerEvents = function () {
+
+
+                };
+
+                var init = function () {
+
+                    getSearchesCount();
+
+                };
+
+                init();
+
+                return this;
+            };
+
+
+        }(jQuery));
+
+        $(function () {
+            $("#websitesSearches").WebsiteSearches({
+                url: '/api' + '@Url.Action("ByWebsite", "Searches")'
+            });
+           
+            $("#searchByAds").SearchByAds({
+                url: '/api' + '@Url.Action("WithAdsCount", "Searches")'
+
+            });
+        });
+    </script>
+}

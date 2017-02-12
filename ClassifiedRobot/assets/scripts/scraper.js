@@ -1,6 +1,35 @@
 (function ($) {
 
-   
+
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+
+    var TaskType =
+    {
+        ExtractAds: 1,
+        SendMessage: 2
+    };
+
+    var TaskStatus =
+    {
+        Runing: 1,
+        Stopped: 2,
+        Completed: 2
+    }
+
     $.Scraper = function (options) {
 
         var $this = $(this);
@@ -21,7 +50,7 @@
             commentForm: '',
             categoriesURL: '',
             categoriesDIV: '',
-            adsListURL:''
+            adsListURL: ''
         };
 
         var options = $.extend(defaults, options);
@@ -34,6 +63,7 @@
 
                 var currentTask;
 
+
                 $.each(taskList, function (index, item) {
                     if (item.log == defaults.logID) {
                         currentTask = item;
@@ -41,15 +71,19 @@
                     }
                 });
 
-                if (currentTask && !currentTask.isCancel) {
-                    whenScraperRuning(true, false);
+                $("#centerProgress").hide();
 
-                    if (currentTask.ads >= currentTask.Logs.TotalAds) {
+                if (currentTask) {
+
+                    if (currentTask.status == TaskStatus.Runing) {
+                        whenScraperRuning(true, false, currentTask.type);
+                        $("#centerProgress").show();
+                    }
+                    else {
+                        whenScraperRuning(false, true, currentTask.type);
                         window.location.reload();
                     }
-                }
-                else {
-                    whenScraperRuning(false, true);
+                                      
                 }
 
                 console.log(currentTask);
@@ -67,13 +101,13 @@
             console.log('task starting');
         };
 
-        this.cancelTask = function (logId) {
+        this.cancelTask = function (logId, taskType) {
             console.log('cancelling task...');
             $.connection.taskManagerHub.server.cancelTask(logId);
 
             wait(3000);
 
-            whenScraperRuning(false, true);
+            whenScraperRuning(false, true, taskType);
         };
 
         this.CancelAllTasks = function () {
@@ -96,7 +130,7 @@
                 initAjaxScraperForm();
                 validateScraperForm();
 
-                $("#id_website").trigger('change');
+                $("#WebsiteId").trigger('change');
             });
         };
 
@@ -129,8 +163,7 @@
         var validateScraperForm = function () {
             $(defaults.scraperForm).validate({
                 rules: {
-                    WebsiteId: "required",
-                    Keywords: 'required'
+                    WebsiteId: "required"
                 },
                 errorPlacement: function (error, element) { }
             });
@@ -190,11 +223,19 @@
 
         };
 
-        var whenScraperRuning = function (operation, cancel) {
+        var whenScraperRuning = function (operation, cancel, taskType) {
+
             $(defaults.scraperForm).find('button').attr('disabled', operation);
             $(defaults.commentForm).find('button, textarea').attr('disabled', operation);
+            console.log(taskType)
+           
 
-            $("#btnCancelExtractAds").attr('disabled', cancel);
+            if (taskType == TaskType.ExtractAds) {
+                $("#btnCancelExtractAds").attr('disabled', cancel);
+            }
+            else {
+                $("#btnCancelPostComment").attr('disabled', cancel);
+            }
         };
 
         var getAds = function () {
@@ -231,36 +272,11 @@
         };
 
         var getCategories = function (id) {
-            $.get(defaults.categoriesURL, { website: id }, function (response) {
-                if (response && response.length > 0) {
-                    createCategoriesDropdown(response);
-                }
+            $.post(defaults.categoriesURL, { id: id }, function (response) {
+                $(defaults.categoriesDIV).html(response);
+
+                $("#CategoryId").val($("#hfCategoryId").val());
             });
-        };
-
-        var createCategoriesDropdown = function (data) {
-
-            var dv = $("<div />", { class: 'form-group' });
-            dv.html($("<label />", { text: 'Categories' }));
-
-            var select = $("<select />", { class: 'form-control', name: 'category' });
-
-            select.append($("<option />", { value: '', text: 'Select Category' }));
-
-            $(data).each(function (index, item) {
-
-                var option = $("<option />", { value: item.id, text: item.name });
-
-                select.append(option);
-            });
-
-            dv.append(select);
-
-            $(defaults.categoriesDIV).html($("<div />", { class: 'col-md-12' }).html(dv));
-
-            if (!$("#id_keywords").val()) $("#id_keywords").val('  ');
-
-            select.val($("#hf_category").val());
         };
 
         /* Comment Form */
@@ -281,7 +297,7 @@
 
                     $(defaults.commentForm).find("input, textarea").each(function () {
                         $(this).addClass('form-control');
-                        $(this).attr('placeholder',  $(this).attr('name'));
+                        $(this).attr('placeholder', $(this).attr('name'));
                     });
                 },
                 error: function () {
@@ -337,36 +353,12 @@
 
         var stopPostingComments = function () {
 
-            $.ajax({
-                type: "GET",
-                url: '/stop_extract_ads',
-                data: { id: defaults.logID, task: defaults.taskID },
-                beforeSend: function () {
-                },
-                success: function (response) {
+            console.log('cancelling task...');
+            $.connection.taskManagerHub.server.cancelTask(defaults.logID);
 
-                    var parsed = $.parseJSON(response);
+            wait(3000);
 
-                    var interval = setInterval(function () {
-
-                        if (!extract_ads_interval) {
-                            notification('Operation stopped..');
-
-                            $(defaults.commentForm).find("input,button").attr('disabled', false);
-                            $(defaults.scraperForm).find("input,button").attr('disabled', false);
-
-                            clearInterval(interval);
-                        }
-
-                    }, 100);
-
-                },
-                error: function () {
-                    $(defaults.commentForm).find("input,button").attr('disabled', false);
-                    $(defaults.scraperForm).find("input,button").attr('disabled', false);
-                }
-            });
-
+            whenScraperRuning(false, true, TaskType.SendMessage);
         };
 
         /* End Comment Form */
@@ -424,39 +416,38 @@
             $("div").on('click', '#btnCancelExtractAds', function (e) {
                 e.stopPropagation();
 
-                that.cancelTask(defaults.logID);
+                that.cancelTask(defaults.logID, TaskType.ExtractAds);
 
             });
 
             $("div").on('click', '#btnPostMessage', function (e) {
                 e.stopPropagation();
 
-                $(defaults.commentForm).find("#id_task").val(defaults.taskID);
-
                 var ads = getCheckedAds();
 
-                $(defaults.commentForm).find("#id_ads").val(ads.join())
+                var data = JSON.stringify($(defaults.commentForm).serializeObject());
 
                 if ($(defaults.commentForm).valid()) {
 
-
                     if (ads.length > 0) {
-                        $("#id_ads").val(ads.join());
-                        $(defaults.commentForm).submit();
+                        console.log(data)
+                        $.connection.taskManagerHub.server.postMessage(defaults.logID, ads.join(), data);
+                        console.log('message posting task starting');
                     }
                     else {
                         notification('Please select ads', 'danger');
                     }
                 }
+
             });
 
             $("div").on('click', '#btnMessageProfile', function (e) {
                 e.stopPropagation();
 
-                $(defaults.commentForm).find("#id_message").val('How much it is?');
-                $(defaults.commentForm).find("#id_name").val('DEV');
-                $(defaults.commentForm).find("#id_phone").val('91180187');
-                $(defaults.commentForm).find("#id_email").val('dev.gumtree001@gmail.com');
+                $(defaults.commentForm).find("#Message").val('How much it is?');
+                $(defaults.commentForm).find("#Name").val('DEV');
+                $(defaults.commentForm).find("#Phone").val('91180187');
+                $(defaults.commentForm).find("#Email").val('dev.gumtree001@gmail.com');
 
             });
 
@@ -473,16 +464,12 @@
                 $("#adsListDiv").find(".chkAd").prop('checked', checked);
             });
 
-            $("div").on('change', '#id_website', function (e) {
+            $("div").on('change', '#WebsiteId', function (e) {
                 e.stopPropagation();
 
                 var val = $(this).val();
 
-                $(defaults.categoriesDIV).empty();
-
-                $("#id_keywords").val($("#id_keywords").val().trim());
-
-                if (val) { getCategories(val); }
+                getCategories(val);
 
             });
 

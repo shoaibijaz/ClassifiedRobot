@@ -97,10 +97,10 @@ C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\Class
 C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.Migrations.init.resources
-C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.Migrations.initu.resources
-C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.csproj.GenerateResource.Cache
 C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.dll
 C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.pdb
 C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.csprojResolveAssemblyReference.cache
-C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.Migrations.initphone.resources
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\WebDriver.dll
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\bin\WebDriver.xml
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.Migrations.initsss.resources
+C:\Users\Shoaib.Ijaz\Documents\Visual Studio 2015\Projects\ClassifiedRobot\ClassifiedRobot\obj\Debug\ClassifiedRobot.csproj.GenerateResource.Cache

@@ -33,7 +33,7 @@ namespace ClassifiedRobot.Hubs
 
             foreach (var task in CurrentTasks)
             {
-                if (task.Value.Pages >= 100)
+                if (task.Value.Status != ViewModels.TaskStatus.Runing)
                 {
                     TaskDetails taskDetails;
                     CurrentTasks.TryRemove(task.Key, out taskDetails);
@@ -58,8 +58,41 @@ namespace ClassifiedRobot.Hubs
 
         }
 
-
         public async Task<string> StartTask(int searchLog)
+        {
+            var tokenSource = new CancellationTokenSource();
+
+            int taskId = searchLog;
+
+            var logObject = ApplicationDbContext.Create().SearchLogs.Include("Website").Include("Category").Where(c => c.SearchLogId == searchLog).First();
+
+            logObject.Category.Website = null;
+
+            CurrentTasks.TryAdd(taskId, new TaskDetails
+            {
+                CancelToken = tokenSource,
+                LogId = searchLog,
+                Ads = 0,
+                Pages = 0,
+                SearchLog = logObject,
+                TaskType = TaskType.ExtractAds,
+                Status = ViewModels.TaskStatus.Runing
+            });
+
+            var task = Scrapers.Scraper.ExtractAds(logObject, tokenSource, new Progress<TaskDetails>(pourcent =>
+             {
+                 if (CurrentTasks.ContainsKey(taskId))
+                     CurrentTasks[taskId] = pourcent;
+
+                 ReportProgress();
+             }));
+
+            await task;
+
+            return "Task result";
+        }
+
+        public async Task<string> PostMessage(int searchLog, string ads, string messageForm)
         {
             var tokenSource = new CancellationTokenSource();
 
@@ -74,16 +107,20 @@ namespace ClassifiedRobot.Hubs
                 LogId = searchLog,
                 Ads = 0,
                 Pages = 0,
-                SearchLog = logObject
+                SearchLog = logObject,
+                TaskType = TaskType.SendMessage,
+                MessageAds = ads,
             });
 
-            var task = Scrapers.Scraper.ExtractAds(logObject, tokenSource, new Progress<TaskDetails>(pourcent =>
-             {
-                 if (CurrentTasks.ContainsKey(taskId))
-                     CurrentTasks[taskId] = pourcent;
+            var messageFrom = Newtonsoft.Json.JsonConvert.DeserializeObject<AdMessage>(messageForm);
 
-                 ReportProgress();
-             }));
+            var task = Bots.PostMessage.Post(logObject,ads, messageFrom, tokenSource, new Progress<TaskDetails>(pourcent =>
+            {
+                if (CurrentTasks.ContainsKey(taskId))
+                    CurrentTasks[taskId] = pourcent;
+
+                ReportProgress();
+            }));
 
             await task;
 

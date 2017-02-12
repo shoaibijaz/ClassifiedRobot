@@ -19,6 +19,13 @@
 
 </div>
 
+<div class="row">
+    <div class="col-md-12 text-center" style="display:none;" id="centerProgress">
+        <img src="/assets/img/loader.gif" width="35" />
+    </div>
+</div>
+
+
 <div class="row" id="adsListDiv">
 
 </div>
@@ -30,6 +37,8 @@
 
 
     <script type="text/javascript">
+
+        currentPage = "bot";
 
         var $scraper;
 
@@ -65,9 +74,9 @@
                 commentFormURL: '@Url.Action("CommentForm")',
                 commentFormDIV: '#commentForm',
                 commentForm: '#fmPostComment',
-                categoriesURL: '/api/categories',
+                categoriesURL: '@Url.Action("GetCategories")',
                 categoriesDIV: '#categories_div',
-                adsListURL:'@Url.Action("ViewAdsOnBot", "FetchedAds")'
+                adsListURL: '@Url.Action("ViewAdsOnBot", "FetchedAds")'
             });
 
             var options = {

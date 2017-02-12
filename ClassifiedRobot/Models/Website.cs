@@ -18,6 +18,8 @@ namespace ClassifiedRobot.Models
         public string CommentURL { get; set; }
         public string MessageFormRules { get; set; }
         public int Order { get; set; }
+
+        public virtual ICollection<SearchLog> Searches { get; set; }
     }
 
 }

@@ -27,35 +27,35 @@ namespace ClassifiedRobot.Scrapers
                 var totalAds = 0;
                 var totalPages = 1;
 
-
-                using (WebClient client = new WebClient())
-                {
-                    var data = client.DownloadString(URL);
-
-                    var parser = new HtmlParser();
-                    var document = parser.Parse(data);
-
-                    if (document.QuerySelectorAll("span.count").Count() > 0)
+                if (log.Keywords != null && !string.IsNullOrEmpty(log.Keywords.Trim()))
+                    using (WebClient client = new WebClient())
                     {
-                        var adsCountLabl = document.QuerySelector("span.count").InnerHtml.Trim().Replace("ads", "").Replace(",", "");
+                        var data = client.DownloadString(URL);
 
-                        int.TryParse(adsCountLabl, out totalAds);
+                        var parser = new HtmlParser();
+                        var document = parser.Parse(data);
 
-                        if (totalAds > 0)
+                        if (document.QuerySelectorAll("span.count").Count() > 0)
                         {
-                            totalPages = 1;
+                            var adsCountLabl = document.QuerySelector("span.count").InnerHtml.Trim().Replace("ads", "").Replace(",", "");
 
-                            if (document.QuerySelectorAll("a.last.follows").Count() > 0)
+                            int.TryParse(adsCountLabl, out totalAds);
+
+                            if (totalAds > 0)
                             {
-                                var pages = document.QuerySelector("a.last.follows").Attributes["href"].Value.Split('/').Last().Replace("v1q0p", "");
+                                totalPages = 1;
 
-                                int.TryParse(pages, out totalPages);
+                                if (document.QuerySelectorAll("a.last.follows").Count() > 0)
+                                {
+                                    var pages = document.QuerySelector("a.last.follows").Attributes["href"].Value.Split('/').Last().Replace("v1q0p", "");
+
+                                    int.TryParse(pages, out totalPages);
+                                }
+
                             }
-
                         }
-                    }
 
-                }
+                    }
 
                 log.TotalAds = totalAds;
                 log.TotalPages = totalPages;
@@ -82,12 +82,14 @@ namespace ClassifiedRobot.Scrapers
                     Pages = i,
                     Ads = i * 1,
                     SearchLog = log,
-                    CancelToken = token
+                    CancelToken = token,
+                    TaskType = TaskType.ExtractAds,
+                    Status = ViewModels.TaskStatus.Runing
                 };
 
                 if (token.IsCancellationRequested)
                 {
-                    detail.isCancel = true;
+                    detail.Status = ViewModels.TaskStatus.Stopped;
 
                     if (progress != null)
                         progress.Report(detail);
@@ -112,6 +114,20 @@ namespace ClassifiedRobot.Scrapers
 
                 await Task.Delay(2000);
             }
+
+            var details = new TaskDetails
+            {
+                LogId = log.SearchLogId,
+                Pages = log.TotalPages,
+                Ads = counter,
+                SearchLog = log,
+                CancelToken = token,
+                TaskType = TaskType.ExtractAds,
+                Status = ViewModels.TaskStatus.Completed
+            };
+
+            if (progress != null)
+                progress.Report(details);
         }
 
         public static int ExtractHTML(string source, SearchLog log, int page)
@@ -177,23 +193,27 @@ namespace ClassifiedRobot.Scrapers
                         }
 
 
-                        fetched.AdId = adId;
-                        fetched.Category = category;
-                        fetched.Created = DateTime.Now;
-                        fetched.Image = image;
-                        fetched.Link = (log.Website.URL + "/" + adLink).Replace("///", "/");
-                        fetched.Location = location;
-                        fetched.Modified = DateTime.Now;
-                        fetched.Name = title;
-                        fetched.Page = page;
-                        fetched.PostedOn = postedDate;
-                        fetched.Price = price;
-                        fetched.SearchLogId = log.SearchLogId;
-                        fetched.Status = FetchedAdStatus.VISIBLE;
 
-                        db.FetchedAds.Add(fetched);
+                        if (validateNegativeWords(log.Negative, title))
+                        {
+                            fetched.AdId = adId;
+                            fetched.Category = category;
+                            fetched.Created = DateTime.Now;
+                            fetched.Image = image;
+                            fetched.Link = (log.Website.URL + "/" + adLink).Replace("///", "/");
+                            fetched.Location = location;
+                            fetched.Modified = DateTime.Now;
+                            fetched.Name = title;
+                            fetched.Page = page;
+                            fetched.PostedOn = postedDate;
+                            fetched.Price = price;
+                            fetched.SearchLogId = log.SearchLogId;
+                            fetched.Status = FetchedAdStatus.VISIBLE;
 
-                        count++;
+                            db.FetchedAds.Add(fetched);
+
+                            count++;
+                        }
 
                     }
 
@@ -206,6 +226,30 @@ namespace ClassifiedRobot.Scrapers
 
             return count;
 
+        }
+
+        private static bool validateNegativeWords(string negativeWords, string target)
+        {
+            var result = true;
+
+            try
+            {
+                target = target.ToLower();
+
+                if (!string.IsNullOrEmpty(negativeWords))
+                {
+                    foreach (var item in negativeWords.Split(','))
+                    {
+                        if (target.Contains(item.ToLower())) return false;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return result;
+            }
         }
     }
 }
